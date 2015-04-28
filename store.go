@@ -34,6 +34,8 @@ func New() Store {
 		"lsdir":  s.ListDir,
 		"get":    s.Get,
 		"gets":   s.GetAll,
+		"getv":   s.GetValue,
+		"getvs":  s.GetAllValues,
 	}
 	return s
 }
@@ -83,6 +85,21 @@ func (s Store) GetAll(pattern string) KVPairs {
 	}
 	sort.Sort(ks)
 	return ks
+}
+
+// GetValue gets the value associated with key. If there are no values
+// associated with key, GetValue returns "".
+func (s Store) GetValue(key string) string {
+	return s.Get(key).Value
+}
+
+func (s Store) GetAllValues(pattern string) []string {
+	vs := make([]string, 0)
+	for _, kv := range s.GetAll(pattern) {
+		vs = append(vs, kv.Value)
+	}
+	sort.Strings(vs)
+	return vs
 }
 
 func (s Store) List(filePath string) []string {
